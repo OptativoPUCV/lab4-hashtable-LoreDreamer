@@ -17,19 +17,24 @@ struct HashMap {
 };
 
 Pair * createPair( char * key,  void * value) {
+  
     Pair * new = (Pair *)malloc(sizeof(Pair));
     new->key = key;
     new->value = value;
     return new;
+  
 }
 
 long hash( char * key, long capacity) {
+  
     unsigned long hash = 0;
-     char * ptr;
+    char * ptr;
+  
     for (ptr = key; *ptr != '\0'; ptr++) {
         hash += hash*32 + tolower(*ptr);
     }
     return hash%capacity;
+  
 }
 
 int is_equal(void* key1, void* key2){
@@ -40,21 +45,30 @@ int is_equal(void* key1, void* key2){
 
 
 void insertMap(HashMap * map, char * key, void * value) {
-
-    if  (map == NULL || key == NULL) 
-      return;
-  
-    if  (map->size == map->capacity) 
-      enlarge(map);
-
-    long posicion = hash(key,map->capacity);
-    while(map->buckets[posicion] != NULL && map->buckets[posicion]->key != NULL) {
-      if(is_equal(map->buckets[posicion]->key,key)) {
-        map->buckets[posicion]->value = value;
+    if (map == NULL || key == NULL) {
         return;
-      }
-      posicion = (posicion + 1) % map->capacity;
-      
+    }
+
+    long index = hash(key, map->capacity);
+    long original_index = index;
+    // Finding an available slot
+    while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
+        index = (index + 1) % map->capacity;
+        if (index == original_index) {
+            // Handle the case where the map is full
+            enlarge(map);
+            index = hash(key, map->capacity);
+            original_index = index;
+        }
+    }
+    // Update existing value if key is found
+    if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
+        // Free existing value
+        free(map->buckets[index]->value);
+        map->buckets[index] = createPair(key, value);
+    } else {
+        map->buckets[index] = createPair(key, value);
+        map->size++;
     }
 }
 
