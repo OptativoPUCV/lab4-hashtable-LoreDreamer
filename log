@@ -98,3 +98,19 @@ Tue 23 Apr 2024 02:45:21 PM UTC:
  tests:  11|2
 total_score: 50/70
 9347965
+Tue 23 Apr 2024 02:59:15 PM UTC: 
+ hashmap.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+In file included from test.c:4:
+hashmap.c: In function ‘firstMap’:
+hashmap.c:156:22: error: ‘key’ undeclared (first use in this function); did you mean ‘key_t’?
+  156 |   if (map == NULL || key == NULL)
+      |                      ^~~
+      |                      key_t
+hashmap.c:156:22: note: each undeclared identifier is reported only once for each function it appears in
+hashmap.c:168:1: error: control reaches end of non-void function [-Werror=return-type]
+  168 | }
+      | ^
+cc1: all warnings being treated as errors
+Compilation failed
+31a2657
