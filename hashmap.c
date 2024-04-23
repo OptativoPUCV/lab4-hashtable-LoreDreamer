@@ -120,6 +120,7 @@ void eraseMap(HashMap * map,  char * key) {
 
     free(map->buckets[index]->key);
     free(map->buckets[index]->value);
+    map->buckets[index] = NULL;
     map->size--;
     
   } 
