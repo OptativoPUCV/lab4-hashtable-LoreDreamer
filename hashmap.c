@@ -45,30 +45,37 @@ int is_equal(void* key1, void* key2){
 
 
 void insertMap(HashMap * map, char * key, void * value) {
-    if (map == NULL || key == NULL) {
-        return;
-    }
 
+    if (map == NULL || key == NULL)
+        return;
+    
     long index = hash(key, map->capacity);
     long original_index = index;
-    // Finding an available slot
-    while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
-        index = (index + 1) % map->capacity;
-        if (index == original_index) {
-            // Handle the case where the map is full
+  
+    while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) { 
+      
+        index = (index + 1) % map->capacity; 
+      
+        if (index == original_index) { // Si se alcanza el índice original, la tabla está llena
+            
             enlarge(map);
             index = hash(key, map->capacity);
             original_index = index;
+          
         }
     }
-    // Update existing value if key is found
+  
+
     if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
-        // Free existing value
+      
         free(map->buckets[index]->value);
         map->buckets[index] = createPair(key, value);
+      
     } else {
+      
         map->buckets[index] = createPair(key, value);
         map->size++;
+      
     }
 }
 
