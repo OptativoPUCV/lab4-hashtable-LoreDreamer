@@ -79,9 +79,9 @@ void insertMap(HashMap * map, char * key, void * value) {
 }
 
 void enlarge(HashMap * map) {
+  
     enlarge_called = 1; //no borrar (testing purposes)
-
-
+  
 }
 
 
@@ -97,9 +97,39 @@ HashMap * createMap(long capacity) {
   
 }
 
-void eraseMap(HashMap * map,  char * key) {    
+void eraseMap(HashMap * map,  char * key) {
 
+  if (map == NULL || key == NULL) 
+    return;
 
+  long index = hash(key, map->capacity);
+  long original_index = index;
+
+  while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
+
+    index = (index + 1) % map->capacity;
+
+    if (index == original_index) {
+
+      return;
+      
+    }
+  }
+
+  if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
+
+    free(map->buckets[index]->key);
+    free(map->buckets[index]->value);
+    free(map->buckets[index]);
+    map->buckets[index] = NULL;
+    map->size--;
+    
+  } else {
+
+    return;
+    
+  }
+  
 }
 
 Pair * searchMap(HashMap * map, char * key) {
@@ -113,6 +143,7 @@ Pair * searchMap(HashMap * map, char * key) {
     while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
       
         index = (index + 1) % map->capacity;
+      
         if (index == original_index) {
             return NULL; // Key not found
         }
