@@ -97,39 +97,32 @@ HashMap * createMap(long capacity) {
   
 }
 
-void eraseMap(HashMap *map, char *key) {
-    if (map == NULL || key == NULL)
-        return;
+void eraseMap(HashMap * map,  char * key) {
 
-    long index = hash(key, map->capacity);
-    long original_index = index;
+  if (map == NULL || key == NULL) 
+    return;
 
-    // Search for the key in the map
-    while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
-        index = (index + 1) % map->capacity;
-        if (index == original_index)
-            return; // Key not found
-    }
+  long index = hash(key, map->capacity);
+  long original_index = index;
 
-    // If the key is found, remove the corresponding pair
-    if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
-        free(map->buckets[index]->key);
-        free(map->buckets[index]->value);
-        free(map->buckets[index]);
-        map->buckets[index] = NULL;
-        map->size--;
-    }
+  while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
 
-    // Rehash the following elements in the same cluster if necessary
     index = (index + 1) % map->capacity;
-    while (map->buckets[index] != NULL) {
-        Pair *pair = map->buckets[index];
-        map->buckets[index] = NULL;
-        map->size--;
-        insertMap(map, pair->key, pair->value);
-        free(pair); // Free the Pair struct, as it's now reinserted
-        index = (index + 1) % map->capacity;
+
+    if (index == original_index) {
+
+      return;
+      
     }
+  }
+
+  if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
+
+    free(map->buckets[index]->key);
+    free(map->buckets[index]->value);
+    map->size--;
+    
+  } 
 }
 
 Pair * searchMap(HashMap * map, char * key) {
