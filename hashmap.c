@@ -56,7 +56,7 @@ void insertMap(HashMap * map, char * key, void * value) {
       
         index = (index + 1) % map->capacity; 
       
-        if (index == original_index) { // Si se alcanza el índice original, la tabla está llena
+        if (index == original_index) { 
             
             enlarge(map);
             index = hash(key, map->capacity);
@@ -65,7 +65,6 @@ void insertMap(HashMap * map, char * key, void * value) {
         }
     }
   
-
     if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
       
         free(map->buckets[index]->value);
@@ -103,10 +102,29 @@ void eraseMap(HashMap * map,  char * key) {
 
 }
 
-Pair * searchMap(HashMap * map,  char * key) {   
-
-
-    return NULL;
+Pair * searchMap(HashMap * map, char * key) {
+  
+    if (map == NULL || key == NULL) 
+        return NULL;
+    
+    long index = hash(key, map->capacity);
+    long original_index = index;
+  
+    while (map->buckets[index] != NULL && !is_equal(map->buckets[index]->key, key)) {
+      
+        index = (index + 1) % map->capacity;
+        if (index == original_index) {
+            return NULL; // Key not found
+        }
+    }
+  
+    if (map->buckets[index] != NULL && is_equal(map->buckets[index]->key, key)) {
+      
+        map->current = index;
+        return map->buckets[index];
+      
+    }
+    return NULL; 
 }
 
 Pair * firstMap(HashMap * map) {
