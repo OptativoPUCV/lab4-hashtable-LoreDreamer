@@ -124,12 +124,7 @@ void eraseMap(HashMap * map,  char * key) {
     map->buckets[index] = NULL;
     map->size--;
     
-  } else {
-
-    return;
-    
-  }
-  
+  } 
 }
 
 Pair * searchMap(HashMap * map, char * key) {
